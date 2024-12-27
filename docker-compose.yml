@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5001"
+    depends_on:
+      - mysql
+      - redis
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "18888:18888"
+    depends_on:
+      - backend
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:6.2
+    restart: always
+    ports:
+      - "6379:6379"
+
+volumes:
+  mysql_data:
+  redis_data:

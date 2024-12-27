@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/usr/src/app  # 将本地代码目录挂载到容器中的工作目录
+      - /usr/src/app/target  # 为 target 目录保留缓存，避免重复编译
+    ports:
+      - "5001:5001"
+    environment:
+      RUST_LOG: debug  # 设定日志级别
+    command: cargo watch -x run
+
+  mysql:
+    volumes:
+      - mysql_dev_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+
+  redis:
+    volumes:
+      - redis_dev_data:/data
+
+volumes:
+  mysql_dev_data:
+  redis_dev_data:
